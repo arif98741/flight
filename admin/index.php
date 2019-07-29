@@ -1,159 +1,87 @@
 <?php include('lib/header.php'); ?>
-<div class="container-fluid">
-
-	<div class="row" style="margin-top: 80px !important;">
-		<?php
-		if (isset($_GET['action']) && $_GET['action'] == 'delete')
-		{
-			$id = $_GET['id'];
-			$statement = $db->pdo->prepare('delete from tickets where id=:id');
-			$statement->bindParam(':id',$id);
-			$statement->execute();
-			$message =  '<p class="alert alert-success">Ticket Successfully Deleted</p>';
-		}
-
-		if (isset($_GET['action']) && $_GET['action'] == 'approve')
-		{
-			$id = $_GET['id'];
-			$statement = $db->pdo->prepare("update tickets set status='approved' where id=:id");
-			$statement->bindParam(':id',$id);
-			$statement->execute();
-			$message =  '<p class="alert alert-success">Ticket Successfully Approved</p>';
-		}
 
 
+	<div class="container-fluid">
 
-		?>
-		
-		
+		<div class="row" style="margin-top: 80px !important;">
+			<?php
+			if (isset($_GET['action']) && $_GET['action'] == 'delete')
+			{
+				$id = $_GET['id'];
+				$statement = $db->prepare('delete from route where route_id=:id');
+				$statement->bindParam(':id',$id);
+				$statement->execute();
+				$message =  '<p class="alert alert-success">Route Deleted Successfully</p>';
+			}
+			if (isset($_POST['update']))
+			{
+				$id                 = $help->validation($_POST['route_id']);
+				$route_name         = $help->validation($_POST['route_name']);
+				$start_destination  = $help->validation($_POST['start_destination']);
+				$end_destination    = $help->validation($_POST['end_destination']);
+				$sql = 'update route set route_name=:route_name,start_destination=:start_destination, end_destination=:end_destination where route_id=:id';
+				$statement = $db->prepare($sql);
+				$statement->bindParam(":route_name",$route_name);
+				$statement->bindParam(":start_destination",$start_destination);
+				$statement->bindParam(":end_destination",$end_destination);
+				$statement->bindParam(":route_id",$id);
+				$message =  '<p class="alert alert-success">Route updated successfully</p>';
+			}
 
-		<div class="col-md-11 mt-1" >
-			<?php echo $message; ?>
-			<div class="card" >
-				<div class="card-header">
-					<h3><i class="fa fa-list-o"></i>&nbsp;Ticket List</h3>
-				</div>
+			?>
 
-				<div class="card-body">
-					
-					<table class="table table-striped table-bordered" id="dataTable">
-						<thead>
-							<tr>
-								<th>SL</th>
-								<th>Ticket ID</th>
-								<th>User</th>
-								<th>Title</th>
-								<th>Department</th>
-								<th>Type</th>
-								<th>Details</th>
-								<th>Date</th>
-								<th>Status</th>
-								<th>Action</th>
-							</tr>
-						</thead>
+			<div class="col-md-12 mt-1">
+				<?php echo $message; ?>
+				<div class="card" >
+					<div class="card-header">
+						<h3><i class="fa fa-list-o"></i>&nbsp;Booking List</h3>
+					</div>
 
-						<tbody>
-							<?php
-
-							$statement = $db->pdo->prepare('select tickets.*,department_name, type_name,usertable.name from tickets 
-								join usertable on usertable.id = tickets.user_id 
-								join departments on departments.id = tickets.department_id 
-								join problem_type on problem_type.id = tickets.problem_type_id order by tickets.id desc');
-							$statement->execute();
-							$tickets = $statement->fetchAll(PDO::FETCH_OBJ);
-							$i = 1;
-                      // echo "<pre>";
-                       // print_r($departments); exit;
-							$i = 1;
-							foreach ($tickets as $ticket){ ?>
+					<div class="card-body">
+						<table class="table table-striped table-bordered" id="dataTable">
+							<thead>
 								<tr>
-									<td><?php echo $i; ?></td>
-									<td><?php echo $ticket->ticket_id; ?></td>
-									<td><?php echo $ticket->name; ?></td>
-									<td><?php echo $ticket->problem_title; ?></td>
-									<td><?php echo $ticket->department_name; ?></td>
-									<td><?php echo $ticket->type_name; ?></td>
-									<td><?php echo $ticket->description; ?></td>
-									<td><?php echo date('d-m-Y, h:iA',strtotime($ticket->added_date)); ?></td>
-									<td><?php echo $ticket->status; ?></td>
-									<td>
-										<?php if($ticket->status == 'approved'): ?>
-											<a href="#" class="btn btn-success  btn-sm"><i class="fa fa-check"></i></a>
+									<th>Flight ID</th>
+									<th>Plane Model </th>
+									<th>Route</th>
+									<th>Booking Date</th>
+									<th>Flight Date</th>
+									<th>Flight Time</th>
+									<th>Status</th>
+								</tr>
+							</thead>
 
-											<?php else: ?>
-												<a href="?action=approve&id=<?php echo $ticket->id ?>" class="btn btn-primary  btn-sm"><i class="fa fa-pencil"></i></a>
-
-											<?php endif ?>
+							<tbody>
+								<?php
 
 
+								$routes = $db->fetchObject('select * from ticket t  join flight_table f on f.flight_id = t.flight_id join route r on f.route_id = r.route_id order by f.flight_id desc');
+								$i = 1;
+								foreach ($routes as $route){?>
 
-											&nbsp;<a href="?action=delete&id=<?php echo $ticket->id ?>" onclick="return(confirm('are you sure to delete?'))" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></a></td>
-										</tr>
-										<?php $i++;}?>
-									</tbody>
-								</table>
+									<tr>
+										<td><?php echo $route->flight_id ?></td>
+										<td><?php echo $route->plane_model; ?></td>
+										<td><?php echo $route->route_name; ?></td>
+										<td><?php echo $route->date; ?></td>
+										<td><?php echo $route->flight_date; ?></td>
+										<td><?php echo $route->flight_time; ?></td>
+										<td><?php echo $route->flight_status; ?></td>
 
+									</tr>
+									<?php $i++;} ?>
+								</tbody>
 
-							</div>
+							</table>
+
 						</div>
 					</div>
-					<div class="col-md-1 mt-1" >
-						<div class="card mt-1" >
-							<div class="card-header">
-								<?php
-
-								$statement = $db->pdo->prepare('select * from tickets');
-								$statement->execute();
-								$total = $statement->rowCount();
-								?>
-								<small></i>&nbsp;Total</small>
-							</div>
-
-							<div class="card-body">
-
-								<h4 class="text-center"><?php echo $total; ?></h4>
-							</div>
-						</div>
-
-						<div class="card mt-1" >
-							<div class="card-header">
-								<?php
-
-								$statement = $db->pdo->prepare("select * from tickets where status='pending'");
-								$statement->execute();
-								$total = $statement->rowCount();
-								?>
-								<small></i>&nbsp;Pending</small>
-							</div>
-
-							<div class="card-body">
-
-								<h4 class="text-center"><?php echo $total; ?></h4>
-							</div>
-						</div>
-
-						<div class="card mt-1" >
-							<div class="card-header">
-								<?php
-
-								$statement = $db->pdo->prepare("select * from tickets  where status='approved'");
-								$statement->execute();
-								$total = $statement->rowCount();
-								?>
-								<small></i>&nbsp;Approved </small>
-							</div>
-
-							<div class="card-body">
-
-								<h4 class="text-center"><?php echo $total; ?></h4>
-							</div>
-						</div>
-
-						
-					</div>
-
 				</div>
+
 			</div>
 		</div>
+		<?php include('lib/footer.php'); ?>
+
+
 		<?php include('lib/footer.php'); ?>
 

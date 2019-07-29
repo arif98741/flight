@@ -1,10 +1,13 @@
-<?php include '../class/DB.php';
+<?php
+include '../class/DB.php';
+include '../class/Helper.php';
 session_start();
 if (!isset($_SESSION['admin_session']))
 {
-    header('location: login.php');
+  header('location: login.php');
 }
 $db = new Database();
+$help = new Helper();
 $message = '';
 $error = [];
 ?>
@@ -16,7 +19,7 @@ $error = [];
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Tickting System</title>
+  <title>Flight Booking Admin </title>
 
   <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/offcanvas/">
 
@@ -36,20 +39,27 @@ $error = [];
 
     <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
       <ul class="navbar-nav mr-auto">
-       
+
+
         <li class="nav-item">
-          <a class="nav-link" href="user_list.php"><i class="fa fa-users"></i>&nbsp;User List</a>
-        </li>
-          <li class="nav-item">
-          <a class="nav-link" href="add_user.php"><i class="fa fa-user-plus"></i>&nbsp;Add User</a>
+          <a class="nav-link" href="add_route.php"><i class="fa fa-plus"></i>&nbsp; Add Route</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="add_department.php"><i class="fa fa-plus"></i>&nbsp; Add Route</a>
-        </li>
-          <li class="nav-item">
-          <a class="nav-link" href="problem_types.php"><i class="fa fa-plane"></i>  &nbsp;Add Flight</a>
+          <a class="nav-link" href="route_list.php"><i class="fa fa-list"></i>&nbsp; Route list</a>
         </li>
 
+        <li class="nav-item">
+          <a class="nav-link" href="add_flight.php"><i class="fa fa-plane"></i>  &nbsp;Add Flight</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="flight_list.php"><i class="fa fa-plane"></i>  &nbsp;Flight list</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="booking.php"><i class="fa fa-plane"></i>  &nbsp;Booking list</a>
+        </li>
+
+        
 
         <li class="nav-item">
           <a class="nav-link" href="logout.php" target="blank"><i class="fa fa-arrow-right"></i>&nbsp;Logout</a>

@@ -49,5 +49,50 @@ class Database {
 
     }
 
+    /*
+    !-----------------------------------------------------
+    ! Statement For Prepare
+    !----------------------------------------------------
+    */
+    public function prepare($sql) {
+        $statement = $this->pdo->prepare($sql);
+        if ($statement)
+            return $statement;
+        else
+            return false;
+    }
+
+    /*
+    !-----------------------------------------------------
+    ! Data Fetch
+    !----------------------------------------------------
+    */
+    public function fetchObject($sql) {
+        $statement = $this->pdo->prepare($sql);
+        if ($statement){
+            $statement->execute();
+            $data = $statement->fetchAll(PDO::FETCH_OBJ);
+            return $data;
+        }else{
+            return false;
+        }
+    }
+
+    /*
+    !-----------------------------------------------------
+    ! Data Fetch
+    !----------------------------------------------------
+    */
+    public function fetchAssoc($sql) {
+        $statement = $this->pdo->prepare($sql);
+        if ($statement){
+            $statement->execute();
+            $data = $statement->fetchAll(PDO::FETCH_ASSOC);
+            return $data;
+        }else{
+            return false;
+        }
+    }
+
 
 }

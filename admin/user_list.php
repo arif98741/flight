@@ -7,21 +7,21 @@
         if (isset($_GET['action']) && $_GET['action'] == 'delete')
         {
             $id = $_GET['id'];
-            $statement = $db->pdo->prepare('delete from departments where id=:id');
+            $statement = $db->pdo->prepare('delete from usertable where id=:id');
             $statement->bindParam(':id',$id);
             $statement->execute();
-            $message =  '<p class="alert alert-success">Department Deleted</p>';
+            $message =  '<p class="alert alert-success">User Deleted</p>';
         }
-        if (isset($_POST['update']))
+        /*if (isset($_POST['update']))
         {
             $department_name = $_POST['department_name'];
             $id = $_POST['id'];
-            $statement = $db->pdo->prepare('update departments set department_name=:department_name where id=:id');
+            $statement = $db->pdo->prepare('update usertable set department_name=:department_name where id=:id');
             $statement->bindParam(':department_name',$department_name);
             $statement->bindParam(':id',$id);
             $statement->execute();
             $message =  '<p class="alert alert-success">Department updated</p>';
-        }
+        }*/
 
         ?>
 
